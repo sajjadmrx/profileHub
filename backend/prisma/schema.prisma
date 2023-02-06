@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Badge {
+  id        Int             @id @default(autoincrement())
+  name      Badge_name_enum
+  userBadge UserBadge[]
+}
+
+model Connections {
+  id       Int                       @id @default(autoincrement())
+  provider Connections_provider_enum
+  userId   Int
+  token    String?                   @db.VarChar(255)
+  refresh  String?                   @db.VarChar(255)
+  enable   Boolean?                  @default(false)
+  user     User                      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Connections_ibfk_1")
+
+  @@index([userId], map: "userId")
+}
+
+model Profile {
+  id         Int       @id @default(autoincrement())
+  userId     Int       @unique(map: "userId")
+  birthday   DateTime? @db.DateTime(0)
+  about      String?   @db.VarChar(255)
+  themeColor String?   @db.VarChar(255)
+  banner     String?   @db.VarChar(255)
+  avatars    String?   @db.VarChar(255)
+  user       User?
+}
+
+model Sessions {
+  id      Int     @id @default(autoincrement())
+  userId  Int
+  refresh String  @db.VarChar(255)
+  ip      String? @db.VarChar(255)
+  device  String? @db.VarChar(255)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Sessions_ibfk_1")
+
+  @@index([userId], map: "userId")
+}
+
+model Socials {
+  id         Int          @id @default(autoincrement())
+  name       String       @db.VarChar(60)
+  prefix     String       @db.VarChar(60)
+  enable     Boolean?     @default(false)
+  userSocial UserSocial[]
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @db.VarChar(255)
+  username    String        @db.VarChar(32)
+  slug        String?       @db.VarChar(30)
+  connections Connections[]
+  sessions    Sessions[]
+  profile     Profile       @relation(fields: [id], references: [userId], onDelete: Cascade, onUpdate: NoAction, map: "User_ibfk_1")
+  userBadge   UserBadge[]
+  userSocial  UserSocial[]
+}
+
+model UserBadge {
+  id      Int   @id @default(autoincrement())
+  badgeId Int
+  userId  Int
+  badge   Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "UserBadge_ibfk_1")
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "UserBadge_ibfk_2")
+
+  @@index([badgeId], map: "badgeId")
+  @@index([userId], map: "userId")
+}
+
+model UserSocial {
+  id       Int     @id @default(autoincrement())
+  socialId Int
+  userId   Int
+  address  String  @db.VarChar(255)
+  socials  Socials @relation(fields: [socialId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "UserSocial_ibfk_1")
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "UserSocial_ibfk_3")
+
+  @@index([socialId], map: "socialId")
+  @@index([userId], map: "userId")
+}
+
+enum Connections_provider_enum {
+  SPOTIFY
+  DISCORD
+}
+
+enum Badge_name_enum {
+  VERIFYID
+  DEVELOPER
+  CONTENT_CREATOR
+}
