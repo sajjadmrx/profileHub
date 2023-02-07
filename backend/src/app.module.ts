@@ -3,6 +3,8 @@ import {LoggerModule} from "./modules/logger/logger.module";
 import {ConsoleLogger} from "./modules/logger/messageLoggers/console.logger";
 import {ConfigModule} from "@nestjs/config";
 import Config from "./config";
+import {HttpModule} from "./modules/http/http.module";
+import {PrismaModule} from "./modules/prisma/prisma.module";
 
 const utilModules: DynamicModule[] = [
     LoggerModule.register(ConsoleLogger),
@@ -13,7 +15,7 @@ const utilModules: DynamicModule[] = [
 ]
 
 @Module({
-    imports: [...utilModules],
+    imports: [...utilModules, HttpModule, PrismaModule],
     controllers: [],
     providers: [],
 })
