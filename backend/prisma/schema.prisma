@@ -28,13 +28,13 @@ model Connections {
 model Profile {
   id         Int       @id @default(autoincrement())
   userId     Int       @unique(map: "userId")
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   birthday   DateTime? @db.DateTime(0)
   about      String?   @db.VarChar(255)
   themeColor String?   @db.VarChar(255)
   banner     String?   @db.VarChar(255)
   avatars    String?   @db.VarChar(255)
   updatedAt  DateTime  @updatedAt
-  user       User?
 }
 
 model Sessions {
@@ -67,9 +67,9 @@ model User {
   updatedAt   DateTime      @updatedAt
   connections Connections[]
   sessions    Sessions[]
-  profile     Profile       @relation(fields: [id], references: [userId], onDelete: Cascade, onUpdate: NoAction, map: "User_ibfk_1")
   userBadge   UserBadge[]
   userSocial  UserSocial[]
+  profile     Profile?
 }
 
 model UserBadge {

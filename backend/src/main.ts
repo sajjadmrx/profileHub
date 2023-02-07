@@ -5,6 +5,7 @@ import {ConfigService} from "@nestjs/config";
 import {Configs} from "./config";
 import {AppMode} from "./shared/constants/app-mode.constant";
 import {DocumentConfig} from "./document.config";
+import {ValidationPipe} from "@nestjs/common";
 
 (async () => {
     const app = await NestFactory.create(AppModule);
@@ -13,6 +14,8 @@ import {DocumentConfig} from "./document.config";
 
     const configService = app.get<ConfigService<Configs>>(ConfigService)
     const port: number = configService.get("PORT") || 3000
+
+    app.useGlobalPipes(new ValidationPipe());
 
     const appMode: AppMode = configService.get("NODE_ENV")
     if (appMode == AppMode.DEVELOPMENT) {

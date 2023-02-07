@@ -30,7 +30,7 @@ export class UsersRepository {
         return this.db.user.create({data: input})
     }
 
-    async createProfile(input: ProfileCreateInput) {
-        return this.db.profile.create({data: input})
+    async createProfile(userId: UserId) {
+        return this.db.profile.create({data: {userId}})
     }
 }

@@ -5,6 +5,8 @@ import {GoogleAuth} from "./interfaces/googleAuth.interface";
 import {User} from "src/shared/interfaces/user.interface";
 import {SessionRepository} from "./session.repository";
 import {v4 as uuidv4} from 'uuid';
+import {ConfigService} from "@nestjs/config";
+import {Configs} from "../../../config";
 
 
 @Injectable()
@@ -13,6 +15,7 @@ export class AuthService {
         private usersRepo: UsersRepository,
         private sessionRepo: SessionRepository,
         private jwtService: JwtService,
+        private configService: ConfigService<Configs>
     ) {
     }
 
@@ -27,9 +30,7 @@ export class AuthService {
                 email: data.email,
                 username,
             });
-            await this.usersRepo.createProfile({
-                userId: user.id
-            })
+            await this.usersRepo.createProfile(user.id)
         }
 
         const payload = {
@@ -42,7 +43,9 @@ export class AuthService {
             userId: user.id
         })
 
-        const jwt: string = await this.jwtService.signAsync(payload);
+        const jwt: string = await this.jwtService.signAsync(payload, {
+            secret: this.configService.get("JWT_SECRET")
+        });
         return {
             token: jwt,
             refresh: refreshToken
