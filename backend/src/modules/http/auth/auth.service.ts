@@ -45,9 +45,7 @@ export class AuthService {
             userId: user.id
         })
 
-        const jwt: string = await this.jwtService.signAsync(payload, {
-            secret: this.configService.get("JWT_SECRET")
-        });
+        const jwt: string = await this.createJwt(payload)
         return {
             token: jwt,
             refresh: refreshToken
