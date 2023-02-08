@@ -8,7 +8,10 @@ export enum Messages {
     IS_PROCESSING = "IS_PROCESSING",
     INVALID_FORMAT = "INVALID_FORMAT",
     UNAUTHORIZED = "UNAUTHORIZED",
-    LIMIT = "LIMIT"
+    LIMIT = "LIMIT",
+    INVALID_REFRESH_TOKEN = "INVALID_REFRESH_TOKEN",
+    REFRESH_TOKEN_IS_EMPTY = "REFRESH_TOKEN_IS_EMPTY",
+    REFRESH_TOKEN_MUST_STRING = "REFRESH_TOKEN_MUST_STRING"
 }
 
 export function getResponseMessage(message: keyof typeof Messages): string {

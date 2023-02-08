@@ -21,21 +21,27 @@ export class HttpExceptionFilter implements ExceptionFilter {
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
-        const message: string = getResponseMessage(exception.message as any) || getResponseMessage("SERVER_ERROR");
-
+        let data: any = exception.getResponse() as object
+        let message = data.message
+        if (!Array.isArray(message))
+            message = getResponseMessage(message) || getResponseMessage("SERVER_ERROR")
+        
         const responseBody = {
             statusCode: httpStatus,
-            message
+            messages: message
         };
 
         httpAdapter
             .reply(ctx.getResponse(), responseBody, httpStatus);
 
-        const hasResponseMessage: string | null = getResponseMessage(
-            exception.message as any
-        );
-        if (!hasResponseMessage) {
-            this.logger.error(exception.message, exception.stack);
+        if (!Array.isArray(message)) {
+            const hasResponseMessage: string | null = getResponseMessage(
+                message as any
+            );
+            if (!hasResponseMessage) {
+                this.logger.error(exception.message, exception.stack);
+            }
         }
+
     }
 }
