@@ -33,4 +33,18 @@ export class UsersRepository {
     async createProfile(userId: UserId) {
         return this.db.profile.create({data: {userId}})
     }
+
+    async getMainProfile(userId: UserId) {
+        return this.db.profile.findUnique({
+            where: {
+                userId
+            },
+            select: {
+                avatars: true,
+                userId: true,
+                banner: true,
+                user: {select: {username: true}}
+            }
+        })
+    }
 }
