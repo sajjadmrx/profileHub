@@ -31,7 +31,7 @@ model Profile {
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   birthday   DateTime? @db.DateTime(0)
   about      String?   @db.VarChar(255)
-  themeColor String?   @db.VarChar(255)
+  themeColor String?   @db.VarChar(6)
   banner     String?   @db.VarChar(255)
   avatars    String?   @db.VarChar(255)
   updatedAt  DateTime  @updatedAt

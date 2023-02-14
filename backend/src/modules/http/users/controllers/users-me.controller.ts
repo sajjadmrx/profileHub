@@ -1,12 +1,13 @@
-import {Controller, Get, UseFilters, UseGuards, UseInterceptors} from "@nestjs/common";
-import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
+import {Body, Controller, Get, Patch, UseFilters, UseGuards, UseInterceptors} from "@nestjs/common";
+import {ApiBearerAuth, ApiTags} from "@nestjs/swagger";
 import {ResponseInterceptor} from "src/shared/interceptors/response.interceptor";
 import {HttpExceptionFilter} from "src/shared/filters/http-exception.filter";
 import {authGuard} from "src/shared/guards/auth.guard";
 import {UsersMeService} from "../services/users-me.service";
 import {getUser} from "src/shared/decorators/user.decorator";
-import mainProfileExample from "../examples_docs/mainProfile.example";
-import {ApiRes} from "../../../../shared/decorators/apiRes.decorator";
+import userDataExample from "../examples_docs/userData.example";
+import {ApiRes} from "src/shared/decorators/apiRes.decorator";
+import {UpdateProfileDto} from "../dtos/update-profile.dto";
 
 
 @ApiTags("Users(Me)")
@@ -20,9 +21,21 @@ export class UsersMeController {
     constructor(private usersMeService: UsersMeService) {
     }
 
-    @ApiRes("get main profile", mainProfileExample)
+    @ApiRes("get user data", userDataExample)
     @Get("/")
     getMe(@getUser("id") userId) {
-        return this.usersMeService.getMainProfile(userId)
+        return this.usersMeService.getUserData(userId)
+    }
+
+    @ApiRes("get current user profile", null)
+    @Get("/profile")
+    getProfile(@getUser("id") userId) {
+        return this.usersMeService.getProfile(userId)
+    }
+
+    @ApiRes("update user profile", null)
+    @Patch("/profile")
+    updateProfile(@Body() input: UpdateProfileDto, @getUser("id") userId) {
+        return this.usersMeService.updateProfile(input, userId)
     }
 }

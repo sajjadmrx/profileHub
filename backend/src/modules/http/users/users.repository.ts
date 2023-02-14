@@ -1,6 +1,12 @@
 import {Injectable} from "@nestjs/common";
 import {PrismaService} from "src/modules/prisma/prisma.service";
-import {ProfileCreateInput, User, UserCreateInput, UserId} from "src/shared/interfaces/user.interface";
+import {
+    ProfileCreateInput,
+    ProfileUpdateInput,
+    User,
+    UserCreateInput,
+    UserId
+} from "src/shared/interfaces/user.interface";
 
 
 @Injectable()
@@ -45,6 +51,21 @@ export class UsersRepository {
                 banner: true,
                 user: {select: {username: true}}
             }
+        })
+    }
+
+    async findOneProfile(userId: UserId) {
+        return this.db.profile.findUnique({
+            where: {
+                userId
+            }
+        })
+    }
+
+    async updateProfile(userId: UserId, date: ProfileUpdateInput) {
+        return this.db.profile.update({
+            where: {userId},
+            data: date
         })
     }
 }
